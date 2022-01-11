@@ -22,7 +22,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI accountTotalGamesText;
 
     [Header("Highscore")]
-    [SerializeField] private TextMeshProUGUI highScoreText; 
+    [SerializeField] private TextMeshProUGUI highScoreText;
+    [SerializeField] private TextMeshProUGUI losersText;
+    [SerializeField] private TextMeshProUGUI totalGamesPlayedText;
 
     [Header("Menu")]
     [SerializeField] private GameObject joinPanel;
@@ -63,7 +65,7 @@ public class GameManager : MonoBehaviour
 
     public void HighScoreUpdate()
     {
-        Account.Instance.UpdateHighscore();
+        Account.Instance.UpdateScores();
     }
 
     public void CreateHost()
@@ -141,9 +143,11 @@ public class GameManager : MonoBehaviour
         accountTotalGamesText.text = $"Total Games: {Account.Instance.TotalGames}";
     }
 
-    private void OnHighscoresUpdated()
+    private void OnUpdateScores()
     {
         highScoreText.text = Account.Instance.HighscoreList;
+        losersText.text = Account.Instance.LoserList;
+        totalGamesPlayedText.text = Account.Instance.TotalGamesPlayed;
     }
 
     private void DisableCardInput(bool correct)
@@ -277,7 +281,6 @@ public class GameManager : MonoBehaviour
     {
         Account.Instance.LoggedIn.AddListener(OnLoggedIn);
         Account.Instance.StatsUpdated.AddListener(OnStatsUpdated);
-        Account.Instance.HighscoresUpdated.AddListener(OnHighscoresUpdated);
+        Account.Instance.ScoresUpdated.AddListener(OnUpdateScores);
     }
-
 }

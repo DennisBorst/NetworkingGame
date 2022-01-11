@@ -30,6 +30,8 @@ public class Account : MonoBehaviour
     private const string ACCOUNTREGISTER_URL = "https://studenthome.hku.nl/~dennis.borst/DataBase/Register.php";
     private const string GETSTATS_URL = "https://studenthome.hku.nl/~dennis.borst/DataBase/GetStats.php";
     private const string GETHIGHSCORES_URL = "https://studenthome.hku.nl/~dennis.borst/DataBase/GetHighscores.php";
+    private const string GETLOSERS_URL = "https://studenthome.hku.nl/~dennis.borst/DataBase/GetLosses.php";
+    private const string GETTOTALGAMES_URL = "https://studenthome.hku.nl/~dennis.borst/DataBase/GetTotalGames.php";
 
     public UnityEvent LoggedIn = new UnityEvent();
     public UnityEvent LoggedOut = new UnityEvent();
@@ -39,7 +41,7 @@ public class Account : MonoBehaviour
     public UnityEvent RegistrationFailed = new UnityEvent();
 
     public UnityEvent StatsUpdated = new UnityEvent();
-    public UnityEvent HighscoresUpdated = new UnityEvent();
+    public UnityEvent ScoresUpdated = new UnityEvent();
 
     public bool IsLoggedIn = false;
     public int Id = -1;
@@ -47,6 +49,8 @@ public class Account : MonoBehaviour
     public int Wins = 0;
     public int TotalGames = 0;
     public string HighscoreList = "";
+    public string LoserList = "";
+    public string TotalGamesPlayed = "";
 
     public void Login(string username, string password)
     {
@@ -80,9 +84,11 @@ public class Account : MonoBehaviour
         StartCoroutine(UpdateStatsRoutine());
     }
 
-    public void UpdateHighscore()
+    public void UpdateScores()
     {
         StartCoroutine(UpdateHighscoreRoutine());
+        StartCoroutine(UpdateLoserRoutine());
+        StartCoroutine(UpdateTotalGamesPlayedRoutine());
     }
 
     [RuntimeInitializeOnLoadMethod]
@@ -172,12 +178,68 @@ public class Account : MonoBehaviour
                 HighscoreList += $"{i + 1}. {playerName}  -  {wins}\n";
             }
 
-            HighscoresUpdated.Invoke();
+            ScoresUpdated.Invoke();
         }
         else
         {
             Debug.Log(httpRequest.result);
             Debug.Log($"Could not retrieve highscores");
+        }
+    }
+
+    private IEnumerator UpdateLoserRoutine()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("id", Id);
+
+        UnityWebRequest httpRequest = UnityWebRequest.Post(GETLOSERS_URL, form);
+        httpRequest.timeout = 15;
+        yield return httpRequest.SendWebRequest();
+
+        if (httpRequest.result == UnityWebRequest.Result.Success)
+        {
+            string loserScoreInfo = httpRequest.downloadHandler.text;
+            loserScoreInfo = loserScoreInfo.Remove(loserScoreInfo.Length - 1);
+            Debug.Log(loserScoreInfo);
+            string[] playerLoserInfo = loserScoreInfo.Split('-');
+            LoserList = "";
+
+            for (int i = 0; i < playerLoserInfo.Length; i++)
+            {
+
+                string[] playerInfo = playerLoserInfo[i].Split('_');
+                string playerName = playerInfo[0];
+
+                if (!int.TryParse(playerInfo[1], out int wins))
+                {
+                    wins = -1;
+                }
+
+                LoserList += $"{i + 1}. {playerName}  -  {wins}\n";
+            }
+
+            ScoresUpdated.Invoke();
+        }
+        else
+        {
+            Debug.Log(httpRequest.result);
+            Debug.Log($"Could not retrieve highscores");
+        }
+    }
+
+    private IEnumerator UpdateTotalGamesPlayedRoutine()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("id", Id);
+
+        UnityWebRequest httpRequest = UnityWebRequest.Post(GETTOTALGAMES_URL, form);
+        httpRequest.timeout = 15;
+        yield return httpRequest.SendWebRequest();
+        if (httpRequest.result == UnityWebRequest.Result.Success)
+        {
+            TotalGamesPlayed = httpRequest.downloadHandler.text;
+
+            ScoresUpdated.Invoke();
         }
     }
 
