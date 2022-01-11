@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 11, 2022 at 11:45 AM
+-- Generation Time: Jan 11, 2022 at 02:02 PM
 -- Server version: 10.2.32-MariaDB
 -- PHP Version: 5.5.14
 
@@ -73,7 +73,9 @@ INSERT INTO `gamesPlayed` (`id`, `date`, `playerOne`, `playerTwo`, `winningPlaye
 (30, '2022-01-11', 4, 6, 4),
 (31, '2022-01-10', 4, 6, 4),
 (32, '2022-01-10', 4, 6, 4),
-(33, '2022-01-11', 6, 1, 6);
+(33, '2022-01-11', 6, 1, 6),
+(34, '2022-01-11', 8, 1, 8),
+(35, '2022-01-11', 9, 8, 9);
 
 -- --------------------------------------------------------
 
@@ -97,7 +99,10 @@ INSERT INTO `users` (`id`, `username`, `password`) VALUES
 (3, 'woef', 'blabla'),
 (4, 'Markreel', 'KrijgJeTochNiet123'),
 (5, 'Henk', 'Klaass'),
-(6, 'Pieter', 'Kaas123');
+(6, 'Pieter', 'Kaas123'),
+(7, 'CooleKikker', 'Swag123'),
+(8, 'Aaron', 'Networking'),
+(9, 'Tonnie', 'PHPMaster');
 
 --
 -- Indexes for dumped tables
@@ -123,13 +128,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `gamesPlayed`
 --
 ALTER TABLE `gamesPlayed`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
